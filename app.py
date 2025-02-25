@@ -17,7 +17,7 @@ gemini_config = GenerationConfig(temperature=0.2)
 st.header("Invoice Data Extractor")
 
 # File uploader for multiple images
-uploaded_files = st.file_uploader("Upload invoice images", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
+uploaded_files = st.file_uploader("Upload invoice images", type=["jpg", "jpeg", "png"])
 
 # Input prompt for AI models
 input_prompt = """
@@ -27,7 +27,13 @@ Your task is to extract all text exactly as it appears on the invoice, without m
 Present the information in a structured JSON format with key-value pairs.
 Do not include any additional explanations, commentary, or unnecessary text—only return the JSON response
 """
-promp= 'Act as an OCR expert, extracts invoice data from the provided image and return a json response'
+promp= '''
+You are an expert in understanding invoices.
+You will receive an image of an invoice.
+Your task is to extract all invoice information and present it in a structured JSON format with key-value pairs.
+Do not include any additional explanations, commentary, or unnecessary.
+
+'''
 
 
 def prepare_image_gemini(uploaded_file):
