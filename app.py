@@ -13,7 +13,7 @@ gemini_api_key = os.getenv("GOOGLE_API_KEY")
 
 
 # Streamlit UI
-st.header("Data Extractor")
+st.header("Invoice OCR")
 
 # File uploader for multiple images
 uploaded_file = st.file_uploader("Upload image", type=["jpg", "jpeg", "png"])
@@ -64,7 +64,7 @@ def get_gemini_response(input_prmp,image):
         st.error(f"Gemini API error: {e}")
         return None
 
-if st.button("Extract"):
+if st.button("Extract Invoice Data"):
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", use_column_width=True)
@@ -74,7 +74,7 @@ if st.button("Extract"):
             response=get_gemini_response(promp,image_data)
 
             if response:
-                st.subheader(f"Extracted Data for {uploaded_file.name}")
+                st.subheader(f"Extracted Data")
                 try:
                     st.json(json.loads(response))
                 except:
