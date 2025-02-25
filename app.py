@@ -22,10 +22,10 @@ uploaded_files = st.file_uploader("Upload invoice images", type=["jpg", "jpeg", 
 # Input prompt for AI models
 input_prompt = """
 Act as an expert in OCR technology.
-You will receive an image of an invoice from any domain (e.g., finance, healthcare, retail, logistics, restaurant, etc.)
-Your task is to extract all information present in the invoice while preserving the structure and relationships between data fields.
-Present the extracted information in a structured JSON format with key-value pairs.
-Just return json, no extra statements or texts.
+You will receive an image of an invoice from any domain (finance, healthcare, retail, logistics, restaurant, etc.)
+Your task is to extract all text exactly as it appears on the invoice, without modifying values..
+Present the information in a structured JSON format with key-value pairs.
+Do not include any additional explanations, commentary, or unnecessary text—only return the JSON response
 """
 promp= 'Act as an OCR expert, extracts invoice data from the provided image and return a json response'
 
