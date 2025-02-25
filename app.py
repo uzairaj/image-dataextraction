@@ -11,13 +11,12 @@ from dotenv import load_dotenv
 load_dotenv()
 gemini_api_key = os.getenv("GOOGLE_API_KEY")
 
-gemini_config = GenerationConfig(temperature=0.2)
 
 # Streamlit UI
 st.header("Invoice Data Extractor")
 
 # File uploader for multiple images
-uploaded_files = st.file_uploader("Upload invoice images", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload invoice images", type=["jpg", "jpeg", "png"])
 
 # Input prompt for AI models
 input_prompt = """
@@ -36,20 +35,28 @@ Do not include any additional explanations, commentary, or unnecessary.
 '''
 
 
-def prepare_image_gemini(uploaded_file):
-    """Convert uploaded file to a PIL image for Gemini API."""
-    try:
-        image = Image.open(uploaded_file)
-        return image
-    except Exception as e:
-        st.error(f"Error processing image for Gemini: {e}")
-        return None
+def input_image_setup(uploaded_file):
+    # Check if a file has been uploaded
+    if uploaded_file is not None:
+        # Read the file into bytes
+        bytes_data = uploaded_file.getvalue()
 
-def get_gemini_response(prompt, image_data):
+        image_parts = [
+            {
+                "mime_type": uploaded_file.type,  # Get the mime type of the uploaded file
+                "data": bytes_data
+            }
+        ]
+        return image_parts
+    else:
+        raise FileNotFoundError("No file uploaded")
+
+
+def get_gemini_response(input_prmp,image):
     try:
         genai.configure(api_key=gemini_api_key)
-        model = genai.GenerativeModel(model_name="gemini-2.0-flash", generation_config=gemini_config)
-        response = model.generate_content([prompt, image_data])
+        model = genai.GenerativeModel(model_name="gemini-2.0-flash")
+        response = model.generate_content([input_prmp,image[0]])
         print('Gemini')
         print(response)
         return response.text
@@ -57,13 +64,14 @@ def get_gemini_response(prompt, image_data):
         st.error(f"Gemini API error: {e}")
         return None
 
-if st.button("Extract Invoice Data") and uploaded_files:
-    for uploaded_file in uploaded_files:
+if st.button("Extract Invoice Data"):
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
         try:
             
-            ##update_image = enhance_image(uploaded_file)
-            image_data = prepare_image_gemini(uploaded_file)
-            response = get_gemini_response(promp, image_data)
+            image_data = input_image_setup(uploaded_file)
+            response=get_gemini_response(promp,image_data)
 
             if response:
                 st.subheader(f"Extracted Data for {uploaded_file.name}")
