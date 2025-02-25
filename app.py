@@ -21,7 +21,7 @@ uploaded_files = st.file_uploader("Upload invoice images", type=["jpg", "jpeg", 
 
 # Input prompt for AI models
 input_prompt = """
-Act as an expert in OCR technology.
+Act as an OCR expert.
 You will receive an image of an invoice from any domain (finance, healthcare, retail, logistics, restaurant, etc.)
 Your task is to extract all text exactly as it appears on the invoice, without modifying values..
 Present the information in a structured JSON format with key-value pairs.
@@ -43,7 +43,7 @@ def get_gemini_response(prompt, image_data):
     try:
         genai.configure(api_key=gemini_api_key)
         model = genai.GenerativeModel(model_name="gemini-2.0-flash", generation_config=gemini_config)
-        response = model.generate_content([input_prompt, image_data])
+        response = model.generate_content([prompt, image_data])
         print('Gemini')
         print(response)
         return response.text
